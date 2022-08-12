@@ -1,13 +1,15 @@
 import { Add } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AddCommentDialog from "../components/AddCommentDialog";
 import AlertPanel from "../components/AlertPanel";
 import CommentsTable from "../components/CommentsTable";
 import { addComment, getCourseComments } from "../utils/api-connector";
+import { SnackbarContext } from "../utils/common/context";
 import { TemplateComment } from "../utils/types";
 
 function LearnerView() {
+  const snackbar = useContext(SnackbarContext);
   const [comments, setComments] = useState<TemplateComment[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,6 +44,7 @@ function LearnerView() {
 
   const handleSaveDialog = async (newComment: TemplateComment) => {
     await addComment(newComment);
+    snackbar.set({ type: "success", message: "Comment added" });
     // Close the dialog
     setDialogOpen(false);
     // Refresh the alerts to display

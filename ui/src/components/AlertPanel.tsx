@@ -2,7 +2,7 @@ import { Add, Close } from "@mui/icons-material";
 import { Alert, Box, Button, IconButton } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { addAlert, deleteAlert, getCourseAlerts } from "../utils/api-connector";
-import { AppContext } from "../utils/common/context";
+import { AppContext, SnackbarContext } from "../utils/common/context";
 import { TemplateAlert } from "../utils/types";
 import AddAlertDialog from "./AddAlertDialog";
 
@@ -11,6 +11,7 @@ interface AlertPanelProps {}
 /** Show basic header info */
 function AlertPanel(props: AlertPanelProps) {
   const appInfo = useContext(AppContext);
+  const snackbar = useContext(SnackbarContext);
   const [alerts, setAlerts] = useState<TemplateAlert[]>([]);
   const [addAlertDialogOpen, setAddAlertDialogOpen] = useState(false);
 
@@ -38,6 +39,7 @@ function AlertPanel(props: AlertPanelProps) {
 
   const handleSaveAddAlertDialog = async (newAlert: TemplateAlert) => {
     await addAlert(newAlert);
+    snackbar.set({ type: "success", message: "Alert added", open: true });
     // Close the dialog
     setAddAlertDialogOpen(false);
     // Refresh the alerts to display
