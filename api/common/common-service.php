@@ -1,8 +1,5 @@
 <?php
 
-
-namespace TokenApi;
-
 require_once __DIR__ . '/common-dao.php';
 
 use Tsugi\Core\LTIX;
@@ -51,6 +48,23 @@ class CommonService
             'darkMode' => Theme::$dark_mode,
             'baseColor' => Theme::$theme_base ? Theme::$theme_base : "#6B5B95"
         );
+    }
+
+    /** 
+     * Restriction middleware that only allows the routing if the user is an instructor.
+     * Call this before any route callback that should be restricted to instructor use.
+     */
+    static function restrictToInstructor($next)
+    {
+        global $USER;
+        if ($USER->instructor) {
+            return $next;
+        } else {
+            return function () {
+                http_response_code(401);
+                return AppRouter::sendJson(array('error' => 'Unauthorized'));
+            };
+        }
     }
 
     /** Comparator for student last name used for sorting roster */
