@@ -1,5 +1,6 @@
 import {
   Box,
+  LinearProgress,
   Paper,
   Table,
   TableBody,
@@ -22,6 +23,7 @@ import TableHeaderSort from "./common/TableHeaderSort";
 import { TemplateComment } from "../utils/types";
 
 interface CommentsTableProps {
+  loading: boolean;
   rows: TemplateComment[];
 }
 
@@ -51,7 +53,7 @@ const filters: FilterConfig[] = [
 
 /** Shows the balances of all available students */
 function CommentsTable(props: CommentsTableProps) {
-  const { rows } = props;
+  const { loading, rows } = props;
   const [filteredRows, setFilteredRows] = useState(rows);
   const [orderBy, setOrderBy] = useState<keyof TemplateComment>();
   const [order, setOrder] = useState<SortOrder>("asc");
@@ -94,11 +96,23 @@ function CommentsTable(props: CommentsTableProps) {
                 </TableCell>
               ))}
             </TableRow>
+            <TableRow>
+              <TableCell
+                colSpan={headers.length}
+                padding={"none"}
+                sx={{ border: "none", height: "4px" }}
+              >
+                {loading && <LinearProgress />}
+              </TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
             {!sortedFilteredRows.length ? (
               <TableRow>
-                <TableCell colSpan={4} sx={{ textAlign: "center" }}>
+                <TableCell
+                  colSpan={headers.length}
+                  sx={{ textAlign: "center" }}
+                >
                   <Typography>No results</Typography>
                 </TableCell>
               </TableRow>

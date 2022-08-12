@@ -10,6 +10,7 @@ import { TemplateComment } from "../utils/types";
 function LearnerView() {
   const [comments, setComments] = useState<TemplateComment[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Retrieve the list of alerts to display
@@ -18,8 +19,10 @@ function LearnerView() {
   }, []);
 
   const fetchComments = async () => {
+    setLoading(true);
     const comments = await getCourseComments();
     setComments(comments);
+    setLoading(false);
   };
 
   const handleClickAddComment = () => {
@@ -66,7 +69,7 @@ function LearnerView() {
         </Button>
       </Box>
       <Box pt={1}>
-        <CommentsTable rows={comments} />
+        <CommentsTable loading={loading} rows={comments} />
       </Box>
       {/* DIALOGS */}
       <AddCommentDialog

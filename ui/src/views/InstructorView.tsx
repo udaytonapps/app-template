@@ -7,10 +7,13 @@ import { TemplateComment } from "../utils/types";
 
 function InstructorView() {
   const [comments, setComments] = useState<TemplateComment[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true); // Turn loading indicator on
     getCourseComments().then((comments) => {
       setComments(comments);
+      setLoading(false); // Turn loading indicator off
     });
   }, []);
 
@@ -18,7 +21,7 @@ function InstructorView() {
     <>
       <AlertPanel />
       <Box pt={1}>
-        <CommentsTable rows={comments} />
+        <CommentsTable loading={loading} rows={comments} />
       </Box>
     </>
   );
