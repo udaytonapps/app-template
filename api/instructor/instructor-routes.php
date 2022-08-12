@@ -35,6 +35,8 @@ AppRouter::add($resource . '/alerts', CommonService::restrictToInstructor(functi
 }), 'get');
 
 /** DELETE */
+/** READ */
+// AppRouter::add($resource . '/alerts/([A-Za-z0-9-]+)', CommonService::restrictToInstructor(function ($someId) {
 AppRouter::add($resource . '/alerts/([0-9]*)', CommonService::restrictToInstructor(function ($id) {
     if (!isset($id)) {
         // Reject if required data is missing
