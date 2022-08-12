@@ -1,4 +1,5 @@
-import { DateTime } from "luxon";
+import { DateTime, Duration } from "luxon";
+import { AppInfo } from "../types";
 import {
   APP_INFO_OVERRIDES,
   DB_DATE_TIME_FORMAT,
@@ -8,19 +9,18 @@ import {
   CraEnvironment,
   DecoratedWindow,
   GeneralTableRow,
-  LtiAppInfo,
   SortOrder,
 } from "./types";
 
 /** Assembles information about the environment used to create the react app */
-export const getAppConfig = (appInfo: LtiAppInfo): LtiAppInfo => {
+export const getAppConfig = (appInfo: AppInfo): AppInfo => {
   const environment = getEnvironment();
   let overrides = {};
   // The client-side configuration will override the server properties, if set
   if (environment === "pre_build") {
     overrides = APP_INFO_OVERRIDES;
   }
-  const config: LtiAppInfo = {
+  const config: AppInfo = {
     ...appInfo,
     ...EnvConfig[environment],
     ...overrides,
@@ -44,17 +44,11 @@ export const getSessionId = (): string => {
 // SORTING
 
 const compareStrings = (a: string, b: string) => {
-  if (a < b) return -1;
-  if (a > b) return 1;
-  return 0;
+  return ("" + a).localeCompare(b);
 };
 
-export const compareRowLastNames = (
-  a: GeneralTableRow,
-  b: GeneralTableRow,
-  fieldKey: string
-) => {
-  return compareLastNames(a[fieldKey].toString(), b[fieldKey].toString());
+export const compareRowLastNames = (a: GeneralTableRow, b: GeneralTableRow) => {
+  return compareLastNames(a.learner_name, b.learner_name);
 };
 
 export const compareLastNames = (a: string, b: string) => {
@@ -79,6 +73,13 @@ export const compareLastNames = (a: string, b: string) => {
   }
 };
 
+export const formatLastCommaFirst = (displayname: string) => {
+  const arr = displayname.split(" ");
+  if (arr[0] && arr[1]) {
+    return `${arr[1]}, ${arr[0]}`;
+  } else return arr[0];
+};
+
 export const compareDateTime = (
   a: GeneralTableRow,
   b: GeneralTableRow,
@@ -99,13 +100,17 @@ const descendingComparator = <T>(a: T, b: T, orderBy: keyof T) => {
 
 export const getComparator = <Key extends keyof GeneralTableRow>(
   order: SortOrder,
-  orderBy: Key,
-  learnerNameKey?: string
-): ((a: GeneralTableRow, b: GeneralTableRow) => number) => {
-  if (learnerNameKey && orderBy === learnerNameKey) {
+  orderBy: Key
+): ((
+  a: GeneralTableRow,
+  b: GeneralTableRow
+  // a: { [key in Key]: number | string },
+  // b: { [key in Key]: number | string }
+) => number) => {
+  if (orderBy === "learner_name") {
     return order === "desc"
-      ? (a, b) => -compareRowLastNames(a, b, learnerNameKey)
-      : (a, b) => compareRowLastNames(a, b, learnerNameKey);
+      ? (a, b) => -compareRowLastNames(a, b)
+      : (a, b) => compareRowLastNames(a, b);
   } else {
     return order === "desc"
       ? (a, b) => descendingComparator(a, b, orderBy)
@@ -141,3 +146,31 @@ export function formatDbDate(dateString: string, format?: string) {
     DateTime.DATETIME_MED || format
   );
 }
+
+export const generateGoogleCalendarUrl = (
+  text: string,
+  details: string,
+  location: string,
+  start: string,
+  duration: string
+) => {
+  const startTime = DateTime.fromFormat(start, DB_DATE_TIME_FORMAT).toFormat(
+    "yyyyMMdd'T'hhmmss"
+  );
+  const endTime = DateTime.fromFormat(start, DB_DATE_TIME_FORMAT)
+    .plus(
+      Duration.fromObject({
+        minutes: Number(duration),
+      })
+    )
+    .toFormat("yyyyMMdd'T'hhmmss");
+  const urlParams = new URLSearchParams({
+    action: "TEMPLATE",
+    dates: `${startTime}/${endTime}`,
+    text,
+    details,
+    location,
+    ctz: "America/New_York",
+  });
+  return `https://calendar.google.com/calendar/event?${urlParams.toString()}`;
+};

@@ -1,7 +1,11 @@
 /** App-specific types */
 
 import { AlertColor } from "@mui/material";
-import { ApiResponse } from "./common/types";
+import { ApiResponse, LtiAppInfo } from "./common/types";
+
+export interface AppInfo extends LtiAppInfo {
+  // someOtherFieldFromTheLaunch: string;
+}
 
 export interface TemplateAlert {
   id: string;
