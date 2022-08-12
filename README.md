@@ -18,7 +18,9 @@ npm install
 npm start
 ```
 
-The UI application will run a local server on http://localhost:3000/. From here, you can make updates to files within the ui/src directory and see your changes reflected in the browser (it will happen automatically, there is no need to refresh).
+The UI application will run a local server on http://localhost:3000/. You will need to cover a valid LTI Launch session ID into the `ui/src/utils/common/constants.ts` file's `APP_INFO_OVERRIDES.sessionId` variable. This is what the UI application will pass to the backend API for any requests. You can copy a sessionId from a local launch of the tool, by viewing the developer panel. To do that, you should build the tool for your local Tsugi instance by running the `npm run build` command from the `ui` directory. This will build the static HTML/CSS files.
+
+From here, you can make updates to files within the ui/src directory and see your changes reflected in the browser on port 3000 (it will happen automatically, there is no need to refresh).
 
 > **A note about common files**:
 Most common elements should be in a common or other dedicated folder. These are services or pieces of functionality that would be common to any learning app (such as a core router, common service, common React components, helper/constants files, etc.). When an update or improvement to common functionality is made, it should be made to the template, and then merged into the learning app that requires the update. In that way, the template stays up to date going forward, and it would be simple to merge the latest template code into other learning apps that may benefit from the updates/changes.
