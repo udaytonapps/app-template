@@ -26,7 +26,7 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
         <DialogTitle id="confirmation-dialog-title">Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText id="confirmation-dialog-description">
-            Are you sure you want to submit this token request?
+            Are you sure?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
