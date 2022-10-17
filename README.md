@@ -10,7 +10,37 @@ The essential [Tsugi](https://www.tsugi.org/) design remains, with an `index.php
 
 ### Typical development workflow:
 
-Clone the repository and access the root directory from the command line. Then access the UI directory and run the [npm](https://www.npmjs.com/) scripts for [installing](https://docs.npmjs.com/cli/v8/commands/npm-install) and [starting](https://docs.npmjs.com/cli/v8/commands/npm-start) the UI app (which are listed in the package.json file).
+First, clone the repository into your Tsugi `mod` folder.
+
+Second, update the path to the APIs in the `ui/src/utils/common/constants.ts` file to reflect the name of your repository.
+
+```ts
+// ui/src/utils/common/constants.ts
+
+export const EnvConfig: Record<CraEnvironment, LtiSessionConfig> = {
+  pre_build: {
+    // Change this line to reflect your pre-build repo path
+    apiUrl: "/learning-apps/mod/mod-template/api/index.php",
+    // apiUrl: "/tsugi/mod/my-cool-app/api/index.php",
+    sessionId: APP_INFO_OVERRIDES.sessionId || "",
+  },
+  local_build: {
+    // Change this line to reflect your local repo path
+    apiUrl: "/learning-apps/mod/mod-template/api/index.php",
+    // apiUrl: "/tsugi/mod/my-cool-app/api/index.php",
+    sessionId,
+  },
+  deployed_build: {
+    // Change this line to reflect your deployed repo path
+    apiUrl: "/mod/template/api/index.php",
+    // apiUrl: "/mod/my-cool-app/api/index.php",
+    sessionId,
+  },
+};
+```
+
+
+ Then, you can access the root directory from the command line and access the UI directory to run the [npm](https://www.npmjs.com/) scripts for [installing](https://docs.npmjs.com/cli/v8/commands/npm-install) and [starting](https://docs.npmjs.com/cli/v8/commands/npm-start) the UI app (which are listed in the package.json file).
 
 ```
 cd ui
@@ -18,7 +48,11 @@ npm install
 npm start
 ```
 
-The UI application will run a local server on http://localhost:3000/. You will need to cover a valid LTI Launch session ID into the `ui/src/utils/common/constants.ts` file's `APP_INFO_OVERRIDES.sessionId` variable. This is what the UI application will pass to the backend API for any requests. You can copy a sessionId from a local launch of the tool, by viewing the developer panel. To do that, you should build the tool for your local Tsugi instance by running the `npm run build` command from the `ui` directory. This will build the static HTML/CSS files.
+The UI application will run a local server on http://localhost:3000/.
+
+At first, you may not see anything except an info icon that toggles the developer panel. During development, this will display helpful information about your app and Tsugi session.
+
+In order for your app to work, you will need to copy a valid LTI Launch session ID into the `ui/src/utils/common/constants.ts` file's `APP_INFO_OVERRIDES.sessionId` variable. This is what the UI application will pass to the backend API for any requests. You can copy a sessionId from a local launch of the tool by viewing it in the Tsugi developer panel. To do that, you should build the tool for your local Tsugi instance by running the `npm run build` command from the `ui` directory. This will build the static HTML/CSS files.
 
 From here, you can make updates to files within the ui/src directory and see your changes reflected in the browser on port 3000 (it will happen automatically, there is no need to refresh).
 
