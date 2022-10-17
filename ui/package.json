@@ -22,9 +22,10 @@
     "start": "REACT_APP_ENV=pre_build react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build": "npm run build:react",
-    "build-prod": "npm run build-prod:react",
-    "build:react": "REACT_APP_ENV=local_build react-scripts build",
+    "build": "npm run build-dev",
+    "build-dev": "npm run build-dev:react",
+    "build-prod": "npm install && npm run build-prod:react && npx rimraf node_modules",
+    "build-dev:react": "REACT_APP_ENV=local_build react-scripts build",
     "build-prod:react": "REACT_APP_ENV=deployed_build react-scripts build"
   },
   "eslintConfig": {
