@@ -11,10 +11,11 @@ interface ConfirmationDialogProps {
   handleClose: () => void;
   handleConfirm: () => void;
   open: boolean;
+  message?: string;
 }
 
 export default function ConfirmationDialog(props: ConfirmationDialogProps) {
-  const { handleClose, handleConfirm, open } = props;
+  const { handleClose, handleConfirm, open, message } = props;
   return (
     <div>
       <Dialog
@@ -26,7 +27,7 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
         <DialogTitle id="confirmation-dialog-title">Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText id="confirmation-dialog-description">
-            Are you sure?
+            {message || "Are you sure?"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
