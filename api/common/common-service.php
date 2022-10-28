@@ -64,6 +64,11 @@ class CommonService
         );
     }
 
+    static function getUserContactByRosterId($userKey)
+    {
+        return self::$DAO->getUserContactByRosterId($userKey);
+    }
+
     /** 
      * Restriction middleware that only allows the routing if the user is an instructor.
      * Call this before any route callback that should be restricted to instructor use.
